@@ -1,0 +1,239 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  padding: 3rem 1.5rem;
+}
+
+.loadingCard {
+  max-width: 64rem;
+  margin: 0 auto;
+  background: white;
+  border-radius: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.loadingSpinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid #f3f4f6;
+  border-top-color: #007A33;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.previewCard {
+  max-width: 64rem;
+  margin: 0 auto;
+  background: white;
+  border-radius: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  padding: 3rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #6b7280;
+  font-size: 1.125rem;
+}
+
+.content {
+  margin-bottom: 3rem;
+}
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 300px;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.imageContainer {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.mainImage {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.imageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.imageContainer:hover img {
+  transform: scale(1.05);
+}
+
+.noImages {
+  grid-column: 1 / -1;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  color: #6b7280;
+}
+
+.propertyDetails {
+  padding: 2rem;
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.propertyName {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.propertyType {
+  padding: 0.5rem 1rem;
+  background: #f0fdf4;
+  color: #007A33;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.infoSection {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4b5563;
+}
+
+.infoIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #007A33;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.descriptionSection {
+  margin-bottom: 2rem;
+}
+
+.description {
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.amenitiesSection {
+  margin-bottom: 2rem;
+}
+
+.amenitiesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.amenityTag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+  border-radius: 1rem;
+  color: #1f2937;
+  font-size: 0.875rem;
+}
+
+.amenityIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #007A33;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.editButton,
+.publishButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.editButton {
+  background: white;
+  border: 2px solid #007A33;
+  color: #007A33;
+}
+
+.editButton:hover {
+  background: #f0fdf4;
+  transform: translateY(-2px);
+}
+
+.publishButton {
+  background: #007A33;
+  border: none;
+  color: white;
+}
+
+.publishButton:hover {
+  background: #005C24;
+  transform: translateY(-2px);
+}
+
+.buttonIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
