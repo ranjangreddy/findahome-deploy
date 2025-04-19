@@ -146,6 +146,120 @@
   color: #007A33;
 }
 
+.propertySpecs {
+  display: flex;
+  gap: 2rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 1rem;
+}
+
+.specItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1f2937;
+}
+
+.specIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #007A33;
+}
+
+.rentalTypeSection {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 1rem;
+}
+
+.rentalTypeInfo {
+  margin-top: 1rem;
+}
+
+.entireHouse {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.rentalIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #007A33;
+}
+
+.unitsSection {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 1rem;
+}
+
+.unitsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.unitItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: white;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+}
+
+.unitType {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.unitQuantity {
+  color: #6b7280;
+}
+
+.contactSection {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.contactDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #1f2937;
+}
+
+.contactLabel {
+  font-weight: 500;
+  min-width: 5rem;
+}
+
+.contactIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #007A33;
+}
+
 .sectionTitle {
   font-size: 1.25rem;
   font-weight: 600;

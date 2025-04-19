@@ -1,43 +1,48 @@
 import React, { useState, createContext, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
-import { User, Lock, Facebook, Twitter } from 'lucide-react';
+import { User, Lock } from 'lucide-react';
 import Logo from './components/Logo';
 import SignUp from './components/SignUp';
 import Home from './components/Home';
 import PostProperty from './components/PostProperty';
 import PreviewListing from './components/PreviewListing';
+import PropertyDetails from './components/PropertyDetails';
 import styles from './components/Login.module.css';
 
-// Create auth context
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (username: string, password: string) => boolean;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
-  login: async () => false,
+  login: () => false,
   logout: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
 
+const DUMMY_CREDENTIALS = {
+  username: 'user123',
+  password: 'password123'
+};
+
 function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const auth = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await auth.login(email, password);
-
+    const success = auth.login(username, password);
+    
     if (success) {
       navigate('/');
     } else {
-      setError('Invalid credentials. Please try again.');
+      setError('Invalid credentials. Use username: user123, password: password123');
     }
   };
 
@@ -57,12 +62,11 @@ function Login() {
           <div className={styles.inputGroup}>
             <User className={styles.icon} />
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
               className={styles.input}
-              required
             />
           </div>
 
@@ -74,7 +78,6 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               className={styles.input}
-              required
             />
           </div>
 
@@ -85,37 +88,17 @@ function Login() {
           <button type="submit" className={styles.loginButton}>
             Login
           </button>
+
+          <p className={styles.signupLink}>
+            New User?{' '}
+            <Link to="/signup">Create a new account</Link>
+          </p>
         </form>
-
-        <div className={styles.divider}>
-          <span className={styles.dividerText}>Or continue with</span>
-        </div>
-
-        <div className={styles.socialButtons}>
-          <button className={styles.socialButton}>
-            <img
-              src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
-              alt="Google"
-              style={{ height: '24px' }}
-            />
-          </button>
-          <button className={styles.socialButton}>
-            <Facebook color="#1877F2" />
-          </button>
-          <button className={styles.socialButton}>
-            <Twitter color="#1DA1F2" />
-          </button>
-        </div>
-
-        <p className={styles.signupLink}>
-          New User? <Link to="/signup">Create a new account</Link>
-        </p>
       </div>
     </div>
   );
 }
 
-// 🔒 Auth guard
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
 
@@ -126,46 +109,19 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-// ✅ Updated AuthProvider with real API integration
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = async (email: string, password: string) => {
-    try {
-      const res = await fetch('http://localhost:3000/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) return false;
-
-      const data = await res.json();
+  const login = (username: string, password: string) => {
+    if (username === DUMMY_CREDENTIALS.username && password === DUMMY_CREDENTIALS.password) {
       setIsAuthenticated(true);
       return true;
-    } catch (err) {
-      console.error('Login error:', err);
-      return false;
     }
+    return false;
   };
 
-  const logout = async () => {
-    try {
-      const res = await fetch('http://localhost:3000/api/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
-  
-      if (res.ok) {
-        setIsAuthenticated(false); // Set isAuthenticated to false
-      } else {
-        console.error('Logout failed');
-      }
-    } catch (err) {
-      console.error('Logout error:', err);
-    }
+  const logout = () => {
+    setIsAuthenticated(false);
   };
 
   return (
@@ -183,6 +139,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/property/:id" element={<PropertyDetails />} />
           <Route
             path="/post-property"
             element={

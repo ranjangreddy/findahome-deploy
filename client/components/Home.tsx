@@ -1,36 +1,32 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  Search, Menu, LogIn, UserPlus, Home as HomeIcon,
-  PlusSquare, Package, LogOut, MapPin, DollarSign
-} from 'lucide-react';
+import { Search, Menu, LogIn, UserPlus, Home as HomeIcon, PlusSquare, Package, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import styles from './Home.module.css';
 
-interface Property {
-  id: number;
-  title: string;
-  location: string;
-  price: number;
-  imageUrl: string;
-}
-
 function Home() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [userListings, setUserListings] = useState<any[]>([]);
   const { isAuthenticated, logout } = useAuth();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (isAuthenticated) {
+      const storedProperty = localStorage.getItem('propertyData');
+      if (storedProperty) {
+        setUserListings([JSON.parse(storedProperty)]);
+      }
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        dropdownRef.current &&
-        menuRef.current &&
+        dropdownRef.current && 
+        menuRef.current && 
         !dropdownRef.current.contains(event.target as Node) &&
         !menuRef.current.contains(event.target as Node)
       ) {
@@ -42,41 +38,61 @@ function Home() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const res = await fetch('http://localhost:3000/api/properties', {
-          credentials: 'include'
-        });
-        const data = await res.json();
-
-        if (res.ok) {
-          setProperties(data);
-        } else {
-          setError(data.error || 'Failed to fetch properties');
-        }
-      } catch (err) {
-        console.error(err);
-        setError('Server error. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProperties();
-  }, []);
-
   const handleMenuClick = () => {
     setShowDropdown(!showDropdown);
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout(); // Call the logout function from AuthContext
-      navigate('/login'); // Redirect to the login page
-    } catch (error) {
-      console.error('Logout failed:', error);
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const handlePropertyClick = (id: number) => {
+    navigate(`/property/${id}`);
+  };
+
+  const apartments = [
+    {
+      id: 1,
+      image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&h=250",
+      title: "JVUE Apartment 1",
+      rating: 4.5,
+      reviews: 234
+    },
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=400&h=250",
+      title: "JVUE Apartment 2",
+      rating: 4.8,
+      reviews: 186
+    },
+    {
+      id: 3,
+      image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&h=250",
+      title: "JVUE Apartment 3",
+      rating: 0,
+      reviews: 0
     }
+  ];
+
+  const renderStars = (rating: number, reviews: number) => {
+    if (reviews === 0) return null;
+
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+
+    for (let i = 0; i < 5; i++) {
+      if (i < fullStars) {
+        stars.push(<span key={i} className={styles.star}>★</span>);
+      } else if (i === fullStars && hasHalfStar) {
+        stars.push(<span key={i} className={`${styles.star} ${styles.half}`}>★</span>);
+      } else {
+        stars.push(<span key={i} className={`${styles.star} ${styles.empty}`}>★</span>);
+      }
+    }
+
+    return stars;
   };
 
   return (
@@ -84,9 +100,9 @@ function Home() {
       <header className={styles.header}>
         <div className={`${styles.searchBar} ${searchFocused ? styles.focused : ''}`}>
           <Search className={styles.searchIcon} />
-          <input
-            type="text"
-            placeholder="Search apartments..."
+          <input 
+            type="text" 
+            placeholder="Search apartments..." 
             className={styles.searchInput}
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
@@ -121,7 +137,7 @@ function Home() {
                   </button>
                   <button className={styles.menuItem} onClick={() => navigate('/my-listings')}>
                     <Package />
-                    <span>My Listings</span>
+                    <span>My Listings ({userListings.length})</span>
                   </button>
                   <button className={styles.menuItem} onClick={() => navigate('/post-property')}>
                     <PlusSquare />
@@ -139,42 +155,66 @@ function Home() {
       </header>
 
       <main className={styles.content}>
-        <section>
-          <h2 className={styles.sectionTitle}>Available Properties</h2>
-
-          {loading ? (
-            <p className={styles.loading}>Loading properties...</p>
-          ) : error ? (
-            <p className={styles.error}>{error}</p>
-          ) : properties.length === 0 ? (
-            <p className={styles.empty}>No properties posted yet.</p>
-          ) : (
+        {isAuthenticated && userListings.length > 0 && (
+          <section>
+            <h2 className={styles.sectionTitle}>My Listings</h2>
             <div className={styles.propertyGrid}>
-              {properties.map((property) => (
-                <div key={property.id} className={styles.propertyCard}>
+              {userListings.map((property, index) => (
+                <div 
+                  key={index} 
+                  className={styles.propertyCard}
+                  onClick={() => handlePropertyClick(index + 1)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <div className={styles.propertyImage}>
-                    <img
-                      src={property.imageUrl || 'https://via.placeholder.com/400x250'}
-                      alt={property.title}
-                    />
+                    <img src={property.photoUrls[0]} alt={property.name} />
                   </div>
                   <div className={styles.propertyDetails}>
-                    <h3 className={styles.propertyTitle}>{property.title}</h3>
-                    <div className={styles.propertyMeta}>
-                      <span><MapPin size={16} /> {property.location}</span>
-                      <span><DollarSign size={16} /> ₹{property.price}/day</span>
+                    <h3 className={styles.propertyTitle}>{property.name}</h3>
+                    <div className={styles.propertyInfo}>
+                      <p className={styles.propertyType}>{property.type}</p>
+                      <p className={styles.propertyPrice}>${property.price}/day</p>
                     </div>
-                    {/* <button
-                      className={styles.viewButton}
-                      onClick={() => navigate('/preview-listing')}
-                    >
-                      View Details
-                    </button> */}
                   </div>
                 </div>
               ))}
             </div>
-          )}
+          </section>
+        )}
+
+        <section>
+          <h2 className={styles.sectionTitle}>Popular Apartments</h2>
+          <div className={styles.propertyGrid}>
+            {apartments.map((apartment) => (
+              <div 
+                key={apartment.id} 
+                className={styles.propertyCard}
+                onClick={() => handlePropertyClick(apartment.id)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className={styles.propertyImage}>
+                  <img src={apartment.image} alt={apartment.title} />
+                </div>
+                <div className={styles.propertyDetails}>
+                  <h3 className={styles.propertyTitle}>{apartment.title}</h3>
+                  {apartment.reviews > 0 ? (
+                    <div className={styles.rating}>
+                      <div className={styles.stars}>
+                        {renderStars(apartment.rating, apartment.reviews)}
+                      </div>
+                      <span className={styles.ratingText}>
+                        {apartment.rating.toFixed(1)} ({apartment.reviews})
+                      </span>
+                    </div>
+                  ) : (
+                    <div className={styles.noReviews}>
+                      No reviews yet
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
       </main>
     </div>

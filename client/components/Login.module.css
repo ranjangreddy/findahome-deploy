@@ -88,63 +88,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  margin-bottom: 1.5rem;
 }
 
 .loginButton:hover {
   background: #005C24;
   transform: translateY(-1px);
-}
-
-.divider {
-  position: relative;
-  text-align: center;
-  margin: 2rem 0;
-}
-
-.divider::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #e5e7eb;
-}
-
-.dividerText {
-  position: relative;
-  background: white;
-  padding: 0 1rem;
-  color: #6b7280;
-  font-size: 0.875rem;
-}
-
-.socialButtons {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.socialButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.socialButton:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-}
-
-.socialButton img {
-  height: 1.5rem;
-  object-fit: contain;
 }
 
 .signupLink {

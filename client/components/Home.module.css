@@ -121,6 +121,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
   gap: 2rem;
+  margin-bottom: 3rem;
 }
 
 .propertyCard {
@@ -156,6 +157,27 @@
   font-weight: 600;
   color: #1f2937;
   margin-bottom: 1rem;
+}
+
+.propertyInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.propertyType {
+  color: #007A33;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.75rem;
+  background: #f0fdf4;
+  border-radius: 1rem;
+}
+
+.propertyPrice {
+  font-weight: 600;
+  color: #1f2937;
 }
 
 .rating {
