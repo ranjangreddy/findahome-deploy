@@ -7,18 +7,52 @@ const router = express.Router();
 
 // POST /api/properties (Authenticated)
 router.post('/properties', requireAuth, async (req, res) => {
-  const { title, description, location, price, imageUrl } = req.body;
+  const {
+    title,
+    type,
+    description,
+    location,
+    bedrooms,
+    bathrooms,
+    hasLivingRoom,
+    rentalType,
+    amenities,
+    imageUrls,
+    price,
+    priceUnit,
+    availableFrom,
+    availableTo,
+    contactName,
+    contactEmail,
+    showEmail,
+    contactPhone,
+    showPhone
+  } = req.body;
 
   try {
     const property = await prisma.property.create({
       data: {
         title,
+        type,
         description,
         location,
+        bedrooms: parseInt(bedrooms),
+        bathrooms: parseInt(bathrooms),
+        hasLivingRoom,
+        rentalType,
+        amenities: JSON.stringify(amenities),
+        imageUrls: JSON.stringify(imageUrls),
         price: parseFloat(price),
-        imageUrl,
-        ownerId: req.user.id
-      }
+        priceUnit,
+        availableFrom: new Date(availableFrom),
+        availableTo: availableTo ? new Date(availableTo) : null,
+        contactName,
+        contactEmail,
+        showEmail,
+        contactPhone,
+        showPhone,
+        ownerId: req.user.id,
+      },
     });
 
     res.status(201).json({ message: 'Property listed successfully', property });

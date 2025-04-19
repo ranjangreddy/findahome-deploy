@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Calendar, DollarSign, Edit, Check, Mail, Phone, Home, Bath, Sofa } from 'lucide-react';
 import styles from './PreviewListing.module.css';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 interface UnitConfig {
   type: 'private' | 'shared';
@@ -32,6 +36,7 @@ interface PropertyData {
 }
 
 function PreviewListing() {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [propertyData, setPropertyData] = useState<PropertyData | null>(null);
   
@@ -199,14 +204,76 @@ function PreviewListing() {
             Edit Listing
           </button>
           <button
-            onClick={() => navigate('/')}
-            className={styles.publishButton}
-          >
-            <Check className={styles.buttonIcon} />
-            Publish Listing
-          </button>
+ onClick={async () => {
+  if (!propertyData || loading) return;
+
+  setLoading(true);
+
+  try {
+    const payload = {
+      title: propertyData.name,
+      type: propertyData.type,
+      description: propertyData.description,
+      location: propertyData.location,
+      bedrooms: Number(propertyData.bedrooms),
+      bathrooms: Number(propertyData.bathrooms),
+      hasLivingRoom: propertyData.hasLivingRoom,
+      rentalType: propertyData.rentalType,
+      amenities: JSON.stringify(propertyData.amenities),   // Send as JSON string
+      imageUrls: JSON.stringify(propertyData.photoUrls),   // Send as JSON string
+      price: parseFloat(propertyData.price),
+      priceUnit: propertyData.priceUnit,
+      availableFrom: propertyData.availableFrom,
+      availableTo: propertyData.availableTo || null,
+      contactName: propertyData.contactName,
+      contactEmail: propertyData.contactEmail,
+      showEmail: propertyData.showEmail,
+      contactPhone: propertyData.contactPhone,
+      showPhone: propertyData.showPhone,
+    };
+
+    const res = await fetch('/api/properties', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include', // Send cookies
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      toast.success('Property successfully published!', { autoClose: 3000 });
+    
+      localStorage.removeItem('propertyData');
+    
+      // Navigate after toast delay (3 seconds)
+      setTimeout(() => {
+        navigate('/'); // or whatever route you want
+      }, 500); // Slightly longer than toast
+    } else {
+      toast.error(data.error || 'Something went wrong.');
+    }
+  } catch (err) {
+    console.error('Error publishing property:', err);
+    toast.error('Server error. Please try again later.');
+  } finally {
+    setLoading(false);
+  }
+}}
+  className={styles.publishButton}
+  disabled={loading}
+>
+  {loading ? (
+    <div className={styles.loadingDot} />
+  ) : (
+    <Check className={styles.buttonIcon} />
+  )}
+  {loading ? 'Publishing...' : 'Publish Listing'}
+</button>
+
         </div>
       </div>
+      <ToastContainer position="bottom-right" />
     </div>
   );
 }
