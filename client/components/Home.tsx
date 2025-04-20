@@ -164,8 +164,8 @@ function Home() {
                 </>
               ) : (
                 <>
-                  <button className={styles.menuItem} onClick={() => navigate('/dashboard')}><HomeIcon /><span>Dashboard</span></button>
-                  <button className={styles.menuItem} onClick={() => navigate('/saved-homes')}><Heart /><span>Saved Homes ({favorites.size})</span></button>
+                  {/* <button className={styles.menuItem} onClick={() => navigate('/dashboard')}><HomeIcon /><span>Dashboard</span></button> */}
+                  {/* <button className={styles.menuItem} onClick={() => navigate('/saved-homes')}><Heart /><span>Saved Homes ({favorites.size})</span></button> */}
                   <button className={styles.menuItem} onClick={() => navigate('/post-property')}><PlusSquare /><span>Post Property</span></button>
                   <button className={styles.menuItem} onClick={handleLogout}><LogOut /><span>Logout</span></button>
                 </>
@@ -212,7 +212,7 @@ function Home() {
         )}
 
         <section>
-          <h2 className={styles.sectionTitle}>{searchQuery ? `Search Results (${filteredApartments.length})` : 'Popular Apartments'}</h2>
+          <h2 className={styles.sectionTitle}>{searchQuery ? `Search Results (${filteredApartments.length})` : 'Featured Rentals'}</h2>
           {filteredApartments.length > 0 ? (
             <div className={styles.propertyGrid}>
               {filteredApartments.map((apartment) => (

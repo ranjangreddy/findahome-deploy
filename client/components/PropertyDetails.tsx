@@ -108,7 +108,7 @@ function PropertyDetails() {
         <div className={styles.content}>
           <div className={styles.header}>
             <div>
-              <h1 className={styles.title}>{property.name || 'Unnamed Property'}</h1>
+              <h1 className={styles.title}>{property.title || 'Unnamed Property'}</h1>
               <div className={styles.location}>
                 <MapPin size={18} />
                 <span>{property.location || 'Unknown Location'}</span>

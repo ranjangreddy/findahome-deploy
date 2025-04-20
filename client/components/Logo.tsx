@@ -1,13 +1,15 @@
 import React from 'react';
+import logo from './logo.png'; // ✅ Correct way to import in Vite
 
 const Logo: React.FC = () => (
   <img 
-    src="https://raw.githubusercontent.com/stackblitz/stackblitz-images/main/tempnest-logo.png" 
+    src={logo} 
     alt="TempNest Logo" 
     style={{ 
       width: '100px', 
       height: 'auto',
-      objectFit: 'contain'
+      objectFit: 'contain',
+      borderRadius:'16px'
     }} 
   />
 );
