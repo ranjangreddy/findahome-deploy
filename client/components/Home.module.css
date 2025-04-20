@@ -130,6 +130,7 @@
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
+  cursor: pointer;
 }
 
 .propertyCard:hover {
@@ -148,6 +149,79 @@
   object-fit: cover;
 }
 
+.propertyPrice {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  color: #007A33;
+  backdrop-filter: blur(4px);
+}
+
+.favoriteButton {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+
+.favoriteButton:hover {
+  transform: scale(1.1);
+}
+
+.favoriteIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #9ca3af;
+  transition: all 0.2s;
+}
+
+.favoriteButton.active .favoriteIcon {
+  color: #ef4444;
+  fill: #ef4444;
+}
+
+.deleteButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+
+.deleteButton:hover {
+  transform: scale(1.1);
+  background: #fee2e2;
+}
+
+.deleteIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #ef4444;
+}
+
 .propertyDetails {
   padding: 1.5rem;
 }
@@ -156,57 +230,32 @@
   font-size: 1.25rem;
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
-.propertyInfo {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 0.5rem;
-}
-
-.propertyType {
-  color: #007A33;
-  font-weight: 500;
+.propertySpecs {
+  color: #4b5563;
   font-size: 0.875rem;
-  padding: 0.25rem 0.75rem;
-  background: #f0fdf4;
-  border-radius: 1rem;
+  margin-bottom: 0.75rem;
 }
 
-.propertyPrice {
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.rating {
+.propertyLocation {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.stars {
-  display: flex;
-  gap: 0.25rem;
-}
-
-.star {
-  color: #fbbf24;
-  font-size: 1.25rem;
-}
-
-.star.empty {
-  color: #e5e7eb;
-}
-
-.ratingText {
   color: #6b7280;
   font-size: 0.875rem;
 }
 
-.noReviews {
+.propertyLocation svg {
+  color: #007A33;
+  flex-shrink: 0;
+}
+
+.noResults {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 1rem;
   color: #6b7280;
-  font-size: 0.875rem;
-  font-style: italic;
 }
