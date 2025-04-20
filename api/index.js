@@ -26,5 +26,6 @@ app.get('/api/protected', requireAuth, (req, res) => {
   res.json({ message: 'You are authenticated!', user: req.user });
 });
 app.use('/api', propertyRoutes);
+app.use('/uploads', express.static('uploads'));
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

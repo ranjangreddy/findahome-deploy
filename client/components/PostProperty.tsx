@@ -2,6 +2,9 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, X, Upload, Home, MapPin, DollarSign, Calendar, ArrowLeft, Minus, Mail, Phone } from 'lucide-react';
 import styles from './PostProperty.module.css';
+import { useEffect } from 'react';
+
+
 
 type Step = 'details' | 'rental-type' | 'amenities' | 'photos' | 'pricing'| 'contact';
 
@@ -59,6 +62,19 @@ function PostProperty() {
     availableFrom: '',
     availableTo: '',
   });
+  // ...
+
+useEffect(() => {
+  const savedData = localStorage.getItem('propertyData');
+  if (savedData) {
+    try {
+      const parsed = JSON.parse(savedData);
+      setForm(parsed);
+    } catch (e) {
+      console.error("Failed to parse saved property data:", e);
+    }
+  }
+}, []);
 
   const handleCounter = (type: 'bedrooms' | 'bathrooms', action: 'increment' | 'decrement') => {
     setForm(prev => {
