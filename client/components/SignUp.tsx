@@ -10,9 +10,7 @@ function SignUp() {
     lastName: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    contactNumber: '',
-    role: 'buyer', // default role
+    confirmPassword: ''
   });
   const navigate = useNavigate();
 
@@ -39,8 +37,6 @@ function SignUp() {
           password: formData.password,
           firstName: formData.firstName,
           lastName: formData.lastName,
-          contactNumber: formData.contactNumber,
-          role: formData.role,
         }),
       });
 
@@ -54,8 +50,6 @@ function SignUp() {
           email: '',
           password: '',
           confirmPassword: '',
-          contactNumber: '',
-          role: 'buyer',
         });
 setTimeout(() => navigate('/login'), 1500);
 
@@ -113,26 +107,12 @@ setTimeout(() => navigate('/login'), 1500);
             <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" className={styles.input} required />
           </div>
 
-          <div className={styles.inputGroup}>
-            <Phone className={styles.icon} />
-            <input type="tel" name="contactNumber" value={formData.contactNumber} onChange={handleChange} placeholder="Contact No." className={styles.input} required />
-          </div>
-
-          <div className={styles.inputGroup}>
-            <select name="role" value={formData.role} onChange={handleChange} className={styles.input}>
-              <option value="buyer">Buyer</option>
-              <option value="seller">Seller</option>
-            </select>
-          </div>
-
           <button type="submit" className={styles.signupButton} disabled={isLoading}>
             {isLoading ? 'Signing Up...' : 'Sign Up'}
           </button>
 
           {message && <p style={{ marginTop: '10px', color: 'crimson' }}>{message}</p>}
         </form>
-
-      
       </div>
     </div>
   );

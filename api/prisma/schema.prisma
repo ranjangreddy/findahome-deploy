@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:Prince@04122000@127.0.0.1:3306/tempnest_db"
+  url = "mysql://root:newpassword@127.0.0.1:3306/tempnest_db"
 }
 
 model User {
@@ -13,13 +13,10 @@ model User {
   lastName           String
   email              String    @unique
   password           String
-  contactNumber      String
-  role               String
   profileImage       String?
   dateCreated        DateTime  @default(now())
   lastLogin          DateTime?
   verificationStatus Boolean   @default(false)
-
   items      Item[]
   properties Property[] @relation("UserProperties")
 }

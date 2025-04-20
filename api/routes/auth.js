@@ -14,7 +14,7 @@ const cookieOptions = {
 
 // REGISTER
 router.post('/register', async (req, res) => {
-    const { email, password, firstName, lastName, contactNumber, role } = req.body;
+    const { email, password, firstName, lastName } = req.body;
   
     try {
       const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -28,8 +28,6 @@ router.post('/register', async (req, res) => {
           password,
           firstName,
           lastName,
-          contactNumber,
-          role,
           dateCreated: new Date(),
         },
       });
