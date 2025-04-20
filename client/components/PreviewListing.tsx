@@ -65,7 +65,7 @@ function PreviewListing() {
         const formData = new FormData();
         formData.append('image', blob, `property-${Date.now()}.png`);
 
-        const uploadRes = await fetch('http://localhost:3000/api/upload', {
+        const uploadRes = await fetch('http://localhost:4000/api/upload', {
           method: 'POST',
           body: formData,
         });

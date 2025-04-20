@@ -8,14 +8,12 @@ import cors from 'cors';
 
 const app = express();
 const prisma = new PrismaClient();
-const PORT = parseInt(process.env.PORT) || 3000;
+const PORT = parseInt(process.env.PORT) || 4000;
 app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true, // needed to allow cookies
 }));
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+
 app.use(express.json());
 app.use(cookieParser());
 

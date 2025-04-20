@@ -18,7 +18,7 @@ function PropertyDetails() {
   useEffect(() => {
     async function fetchProperty() {
       try {
-        const res = await fetch(`http://localhost:3000/api/properties/${propertyId}`);
+        const res = await fetch(`http://localhost:4000/api/properties/${propertyId}`);
         if (res.ok) {
           const data = await res.json();
           setProperty(data);

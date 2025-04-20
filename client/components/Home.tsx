@@ -21,7 +21,7 @@ function Home() {
     if (isAuthenticated) {
       async function fetchUserListings() {
         try {
-          const res = await fetch(`http://localhost:3000/api/my-listings`, {
+          const res = await fetch(`http://localhost:4000/api/my-listings`, {
             credentials: 'include',
           });
           if (res.ok) {
@@ -44,7 +44,7 @@ function Home() {
   }, []);
   async function fetchProperties() {
     try {
-      const res = await fetch('http://localhost:3000/api/properties', {
+      const res = await fetch('http://localhost:4000/api/properties', {
         credentials: 'include',
       });
       if (res.ok) {
@@ -105,7 +105,7 @@ function Home() {
 
   const handleDeleteListing = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/properties/${id}`, {
+      const res = await fetch(`http://localhost:4000/api/properties/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
