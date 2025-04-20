@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Calendar, DollarSign, Edit, Check, Mail, Phone, Home, Bath, Sofa } from 'lucide-react';
 import styles from './PreviewListing.module.css';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface UnitConfig {
   type: 'private' | 'shared';
@@ -29,18 +32,53 @@ interface PropertyData {
   priceUnit: '/day' | '/month';
   availableFrom: string;
   availableTo: string;
+  latitude:any,
+  longitude:any,
 }
 
 function PreviewListing() {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [propertyData, setPropertyData] = useState<PropertyData | null>(null);
-  
+
   useEffect(() => {
     const data = localStorage.getItem('propertyData');
     if (data) {
       setPropertyData(JSON.parse(data));
     }
   }, []);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const uploadImagesAndGetUrls = async (photoUrls: string[]): Promise<string[]> => {
+    const urls: string[] = [];
+
+    for (const url of photoUrls) {
+      if (url.startsWith('blob:')) {
+        const blob = await fetch(url).then(res => res.blob());
+        const formData = new FormData();
+        formData.append('image', blob, `property-${Date.now()}.png`);
+
+        const uploadRes = await fetch('http://localhost:3000/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await uploadRes.json();
+        urls.push(data.url);
+      } else {
+        urls.push(url);
+      }
+    }
+
+    return urls;
+  };
 
   if (!propertyData) {
     return (
@@ -52,14 +90,6 @@ function PreviewListing() {
       </div>
     );
   }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
 
   return (
     <div className={styles.container}>
@@ -112,7 +142,7 @@ function PreviewListing() {
             </div>
 
             <div className={styles.rentalTypeSection}>
-              <h3 className={styles.sectionTitle}>Rental Type</h3>
+              <h3 className={styles.sectionTitle}>Available Units</h3>
               <div className={styles.rentalTypeInfo}>
                 {propertyData.rentalType === 'entire' ? (
                   <div className={styles.entireHouse}>
@@ -131,6 +161,7 @@ function PreviewListing() {
                 )}
               </div>
             </div>
+            <h3 className={styles.sectionTitle}>Property Details</h3>
 
             <div className={styles.propertySpecs}>
               <div className={styles.specItem}>
@@ -199,14 +230,68 @@ function PreviewListing() {
             Edit Listing
           </button>
           <button
-            onClick={() => navigate('/')}
+            onClick={async () => {
+              if (!propertyData || loading) return;
+              setLoading(true);
+              try {
+                const uploadedUrls = await uploadImagesAndGetUrls(propertyData.photoUrls);
+                const payload = {
+                  title: propertyData.name,
+                  type: propertyData.type,
+                  description: propertyData.description,
+                  location: propertyData.location,
+                  bedrooms: Number(propertyData.bedrooms),
+                  bathrooms: Number(propertyData.bathrooms),
+                  hasLivingRoom: propertyData.hasLivingRoom,
+                  rentalType: propertyData.rentalType,
+                  amenities: propertyData.amenities,
+                  imageUrls: uploadedUrls,
+                  price: parseFloat(propertyData.price),
+                  priceUnit: propertyData.priceUnit,
+                  availableFrom: propertyData.availableFrom,
+                  availableTo: propertyData.availableTo || null,
+                  contactName: propertyData.contactName,
+                  contactEmail: propertyData.contactEmail,
+                  showEmail: propertyData.showEmail,
+                  contactPhone: propertyData.contactPhone,
+                  showPhone: propertyData.showPhone,
+                  units: propertyData.units || [],
+                  latitude:propertyData.latitude,
+                  longitude:propertyData.longitude,
+                };
+
+                const res = await fetch('/api/properties', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  credentials: 'include',
+                  body: JSON.stringify(payload),
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                  toast.success('Property successfully published!', { autoClose: 3000 });
+                  localStorage.removeItem('propertyData');
+                  setTimeout(() => navigate('/'), 500);
+                } else {
+                  toast.error(data.error || 'Something went wrong.');
+                }
+              } catch (err) {
+                console.error('Error publishing property:', err);
+                toast.error('Server error. Please try again later.');
+              } finally {
+                setLoading(false);
+              }
+            }}
             className={styles.publishButton}
+            disabled={loading}
           >
-            <Check className={styles.buttonIcon} />
-            Publish Listing
+            {loading ? <div className={styles.loadingDot} /> : <Check className={styles.buttonIcon} />}
+            {loading ? 'Publishing...' : 'Publish Listing'}
           </button>
         </div>
       </div>
+      <ToastContainer position="bottom-right" />
     </div>
   );
 }

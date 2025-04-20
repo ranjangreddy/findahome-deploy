@@ -1,10 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect,useRef  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, X, Upload, Home, MapPin, DollarSign, Calendar, ArrowLeft, Minus, Mail, Phone } from 'lucide-react';
 import styles from './PostProperty.module.css';
-import { useEffect } from 'react';
-
-
 
 type Step = 'details' | 'rental-type' | 'amenities' | 'photos' | 'pricing'| 'contact';
 
@@ -14,6 +11,9 @@ interface UnitConfig {
 }
 
 interface PropertyForm {
+  
+  latitude: any | null;
+  longitude: any | null;
   name: string;
   type: string;
   location: string;
@@ -35,12 +35,66 @@ interface PropertyForm {
   availableFrom: string;
   availableTo: string;
 }
+const loadGoogleMapsScript = () => {
+  if (!window.google) {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places`;
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+  }
+};
+
+// Address input with autocomplete
+const AddressAutocomplete = ({
+  value,
+  onSelect,
+}: {
+  value: string;
+  onSelect: (address: string, lat: any, lng: any) => void;
+}) => {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    loadGoogleMapsScript();
+    const interval = setInterval(() => {
+      if (window.google && window.google.maps && inputRef.current) {
+        clearInterval(interval);
+        const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
+          componentRestrictions: { country: 'us' },
+          fields: ['formatted_address', 'geometry'],
+        });
+
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place.formatted_address && place.geometry) {
+            const lat = place.geometry.location?.lat();
+            const lng = place.geometry.location?.lng();
+            onSelect(place.formatted_address, lat, lng);
+          }
+        });
+      }
+    }, 500);
+  }, []);
+
+  return (
+    <input
+      ref={inputRef}
+      type="text"
+      className={styles.input}
+      placeholder="Search address"
+      defaultValue={value}
+    />
+  );
+};
 
 function PostProperty() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<Step>('details');
   const [progress, setProgress] = useState(16.67);
   const [form, setForm] = useState<PropertyForm>({
+    latitude: null,
+    longitude: null,
     name: '',
     type: '',
     location: '',
@@ -62,20 +116,26 @@ function PostProperty() {
     availableFrom: '',
     availableTo: '',
   });
-  // ...
-
-useEffect(() => {
-  const savedData = localStorage.getItem('propertyData');
-  if (savedData) {
-    try {
-      const parsed = JSON.parse(savedData);
-      setForm(parsed);
-    } catch (e) {
-      console.error("Failed to parse saved property data:", e);
+  useEffect(() => {
+    const savedData = localStorage.getItem('propertyData');
+    if (savedData) {
+      try {
+        setForm(JSON.parse(savedData));
+      } catch (err) {
+        console.error('Failed to parse saved form data:', err);
+      }
     }
-  }
-}, []);
-
+  }, []);
+ 
+  const handleSelectAddress = (address: string, lat: number, lng: number) => {
+    setForm(prev => ({
+      ...prev,
+      location: address,
+      latitude: lat,
+      longitude: lng,
+    }));
+  };
+  
   const handleCounter = (type: 'bedrooms' | 'bathrooms', action: 'increment' | 'decrement') => {
     setForm(prev => {
       const currentValue = prev[type];
@@ -259,19 +319,13 @@ useEffect(() => {
             </div>
 
             <div className={styles.inputGroup}>
-              <label className={styles.label}>
-                <MapPin className={styles.inputIcon} />
-                Location
-              </label>
-              <input
-                type="text"
-                value={form.location}
-                onChange={e => setForm(prev => ({ ...prev, location: e.target.value }))}
-                className={styles.input}
-                placeholder="Enter location"
-              />
-              {!form.location && <p className={styles.error}>Location is required</p>}
-            </div>
+            <label className={styles.label}>
+              <MapPin className={styles.inputIcon} />
+              Location
+            </label>
+            <AddressAutocomplete value={form.location} onSelect={handleSelectAddress} />
+            {!form.location && <p className={styles.error}>Location is required</p>}
+          </div>
 
             <div className={styles.roomDetails}>
               <div className={styles.roomCounter}>
