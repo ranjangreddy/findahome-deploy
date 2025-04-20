@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url = "mysql://root:newpassword@127.0.0.1:3306/tempnest_db"
+  provider = "postgresql"
+  url = "postgresql://tempnest_db_user:O20DeMIvMjISqqn3T0Tm2pW5KR0qdyRG@dpg-d02divbe5dus73bm1ma0-a.oregon-postgres.render.com/tempnest_db"
+  relationMode="prisma"
 }
 
 model User {

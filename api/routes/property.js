@@ -34,7 +34,31 @@ router.post('/properties', requireAuth, async (req, res) => {
     longitude,
     units 
   } = req.body;
+  if (
+    !title || !type || !description || !location ||
+    isNaN(parseInt(bedrooms)) || isNaN(parseInt(bathrooms)) ||
+    typeof hasLivingRoom !== 'boolean' ||
+    !['entire', 'units'].includes(rentalType) ||
+    !Array.isArray(amenities) || !Array.isArray(imageUrls) ||
+    isNaN(parseFloat(price)) || !['/day', '/month'].includes(priceUnit) ||
+    !availableFrom || !contactName || !contactEmail || !contactPhone ||
+    typeof showEmail !== 'boolean' || typeof showPhone !== 'boolean' ||
+    isNaN(latitude) || isNaN(longitude)
+  ) {
+    return res.status(400).json({ error: 'Missing or invalid required fields' });
+  }
 
+  if (rentalType === 'units' && (!Array.isArray(units) || units.length === 0)) {
+    return res.status(400).json({ error: 'Units are required when rentalType is "units"' });
+  }
+
+  if (rentalType === 'units') {
+    for (const unit of units) {
+      if (!['private', 'shared'].includes(unit.type) || isNaN(unit.quantity)) {
+        return res.status(400).json({ error: 'Invalid unit configuration' });
+      }
+    }
+  }
   try {
     const property = await prisma.property.create({
       data: {
