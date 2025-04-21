@@ -10,7 +10,7 @@ const app = express();
 const prisma = new PrismaClient();
 const PORT = parseInt(process.env.PORT) || 4000;
 app.use(cors({
-  origin: `https://final-project-part-2-algorithm-unlocked.onrender.com`,
+  origin: `https://findahome-olgsc9h13-ranjangreddys-projects.vercel.app/`,
   credentials: true, // needed to allow cookies
 }));
 
