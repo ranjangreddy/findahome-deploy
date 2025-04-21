@@ -177,7 +177,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post('/upload', upload.single('image'), (req, res) => {
-  const imageUrl = `http://localhost:4000/uploads/${req.file.filename}`;
+  const imageUrl = `https://final-project-part-2-algorithm-unlocked.onrender.com/uploads/${req.file.filename}`;
   res.json({ url: imageUrl });
 });
 router.delete('/properties/:id', async (req, res) => {
