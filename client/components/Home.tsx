@@ -21,7 +21,7 @@ function Home() {
     if (isAuthenticated) {
       async function fetchUserListings() {
         try {
-          const res = await fetch(`${process.env.API_URL}/api/my-listings`, {
+          const res = await fetch(`${process.env.REACT_APP_API_URL}/api/my-listings`, {
             credentials: 'include',
           });
           if (res.ok) {
@@ -44,7 +44,7 @@ function Home() {
   }, []);
   async function fetchProperties() {
     try {
-      const res = await fetch(`${process.env.API_URL}/api/properties`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/properties`, {
         credentials: 'include',
       });
       if (res.ok) {
@@ -105,7 +105,7 @@ function Home() {
 
   const handleDeleteListing = async (id: number) => {
     try {
-      const res = await fetch(`${process.env.API_URL}/api/properties/${id}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/properties/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
