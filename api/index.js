@@ -10,7 +10,7 @@ const app = express();
 const prisma = new PrismaClient();
 const PORT = parseInt(process.env.PORT) || 4000;
 app.use(cors({
-  origin: `https://findahome-olgsc9h13-ranjangreddys-projects.vercel.app`,
+  origin: `https://findahome-six.vercel.app`,
   credentials: true, // needed to allow cookies
 }));
 
