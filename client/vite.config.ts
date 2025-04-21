@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: `${process.env.REACT_APP_API_URL}`,
+        target: `${import.meta.env.VITE_API_URL}`,
         changeOrigin: true,
         secure: false,
       },
