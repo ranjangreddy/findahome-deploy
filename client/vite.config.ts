@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: `https://findahome-r5ta6i2rl-ranjangreddys-projects.vercel.app/_logs`,
+        target: `https://findahome-r5ta6i2rl-ranjangreddys-projects.vercel.app/`,
         changeOrigin: true,
         secure: false,
       },
