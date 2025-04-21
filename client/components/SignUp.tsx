@@ -29,7 +29,7 @@ function SignUp() {
     setMessage('');
 
     try {
-      const res = await fetch(`https://final-project-part-2-algorithm-unlocked.onrender.comapi/register`, {
+      const res = await fetch(`https://final-project-part-2-algorithm-unlocked.onrender.com/api/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
