@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Calendar, DollarSign, Edit, Check, Mail, Phone, Home, Bath, Sofa } from 'lucide-react';
 import styles from './PreviewListing.module.css';
-import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -65,7 +64,7 @@ function PreviewListing() {
         const formData = new FormData();
         formData.append('image', blob, `property-${Date.now()}.png`);
 
-        const uploadRes = await fetch('http://localhost:4000/api/upload', {
+        const uploadRes = await fetch(`${process.env.API_URL}/api/upload`, {
           method: 'POST',
           body: formData,
         });
