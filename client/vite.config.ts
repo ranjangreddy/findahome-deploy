@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: `${import.meta.env.VITE_API_URL}`,
+        target: `https://findahome-r5ta6i2rl-ranjangreddys-projects.vercel.app/_logs`,
         changeOrigin: true,
         secure: false,
       },
