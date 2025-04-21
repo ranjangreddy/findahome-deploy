@@ -64,7 +64,7 @@ function PreviewListing() {
         const formData = new FormData();
         formData.append('image', blob, `property-${Date.now()}.png`);
 
-        const uploadRes = await fetch(`${import.meta.env.VITE_API_URL}/api/upload`, {
+        const uploadRes = await fetch(`https://final-project-part-2-algorithm-unlocked.onrender.com/api/upload`, {
           method: 'POST',
           body: formData,
         });

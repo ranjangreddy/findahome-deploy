@@ -21,7 +21,7 @@ function Home() {
     if (isAuthenticated) {
       async function fetchUserListings() {
         try {
-          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/my-listings`, {
+          const res = await fetch(`https://final-project-part-2-algorithm-unlocked.onrender.com/api/my-listings`, {
             credentials: 'include',
           });
           if (res.ok) {
@@ -44,7 +44,7 @@ function Home() {
   }, []);
   async function fetchProperties() {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/properties`, {
+      const res = await fetch(`https://final-project-part-2-algorithm-unlocked.onrender.com/api/properties`, {
         credentials: 'include',
       });
       if (res.ok) {
@@ -105,7 +105,7 @@ function Home() {
 
   const handleDeleteListing = async (id: number) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/properties/${id}`, {
+      const res = await fetch(`https://final-project-part-2-algorithm-unlocked.onrender.com/api/properties/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });

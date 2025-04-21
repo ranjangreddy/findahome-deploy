@@ -29,7 +29,7 @@ function SignUp() {
     setMessage('');
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}api/register`, {
+      const res = await fetch(`https://final-project-part-2-algorithm-unlocked.onrender.comapi/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

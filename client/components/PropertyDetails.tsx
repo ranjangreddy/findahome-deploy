@@ -18,7 +18,7 @@ function PropertyDetails() {
   useEffect(() => {
     async function fetchProperty() {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/properties/${propertyId}`);
+        const res = await fetch(`https://final-project-part-2-algorithm-unlocked.onrender.com/api/properties/${propertyId}`);
         if (res.ok) {
           const data = await res.json();
           setProperty(data);
