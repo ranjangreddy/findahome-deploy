@@ -9,8 +9,6 @@ const JWT_SECRET = 'tempnest_secret';
 // Cookie options
 const cookieOptions = {
   httpOnly: true,
-  secure: true,           // 🔒 required for cross-site cookies (only works on HTTPS)
-  sameSite: 'none',       // 👈 allows cross-site cookie sharing
   maxAge: 60 * 60 * 1000, // 1 hour
 };
 // REGISTER
