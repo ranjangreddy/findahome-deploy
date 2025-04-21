@@ -259,7 +259,7 @@ function PreviewListing() {
                   longitude:propertyData.longitude,
                 };
 
-                const res = await fetch('/api/properties', {
+                const res = await fetch('https://final-project-part-2-algorithm-unlocked.onrender.com/api/properties', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   credentials: 'include',
