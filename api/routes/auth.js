@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 
 const router = express.Router();
 const prisma = new PrismaClient();
-const JWT_SECRET = 'tempnest_secret';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Cookie options
 const cookieOptions = {

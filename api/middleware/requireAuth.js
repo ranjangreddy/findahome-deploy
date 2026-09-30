@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = 'tempnest_secret';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const requireAuth = (req, res, next) => {
   const token = req.cookies.token;
