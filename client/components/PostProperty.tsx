@@ -35,17 +35,9 @@ interface PropertyForm {
   availableFrom: string;
   availableTo: string;
 }
-const loadGoogleMapsScript = () => {
-  if (!window.google) {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places`;
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-  }
-};
-
-// Address input with autocomplete
+// Address input with autocomplete (Places API (New) — the legacy
+// google.maps.places.Autocomplete widget needs the legacy Places API,
+// which can't be enabled on new Google Cloud projects)
 const AddressAutocomplete = ({
   value,
   onSelect,
@@ -53,38 +45,94 @@ const AddressAutocomplete = ({
   value: string;
   onSelect: (address: string, lat: any, lng: any) => void;
 }) => {
-  const inputRef = useRef(null);
+  const [text, setText] = useState(value);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [open, setOpen] = useState(false);
+  const sessionToken = useRef<any>(null);
+  const requestId = useRef(0);
+
+  useEffect(() => setText(value), [value]);
 
   useEffect(() => {
-    loadGoogleMapsScript();
-    const interval = setInterval(() => {
-      if (window.google && window.google.maps && inputRef.current) {
-        clearInterval(interval);
-        const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
-          componentRestrictions: { country: 'us' },
-          fields: ['formatted_address', 'geometry'],
+    const places = (window as any).google?.maps?.places;
+    if (!text.trim() || !places?.AutocompleteSuggestion) {
+      setSuggestions([]);
+      return;
+    }
+    const id = ++requestId.current;
+    const timer = setTimeout(async () => {
+      if (!sessionToken.current) sessionToken.current = new places.AutocompleteSessionToken();
+      try {
+        const { suggestions } = await places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+          input: text,
+          includedRegionCodes: ['us'],
+          sessionToken: sessionToken.current,
         });
-
-        autocomplete.addListener('place_changed', () => {
-          const place = autocomplete.getPlace();
-          if (place.formatted_address && place.geometry) {
-            const lat = place.geometry.location?.lat();
-            const lng = place.geometry.location?.lng();
-            onSelect(place.formatted_address, lat, lng);
-          }
-        });
+        if (id === requestId.current) setSuggestions(suggestions.filter((s: any) => s.placePrediction));
+      } catch (err) {
+        console.error('Address autocomplete failed:', err);
       }
-    }, 500);
-  }, []);
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [text]);
+
+  const choose = async (suggestion: any) => {
+    const prediction = suggestion.placePrediction;
+    setOpen(false);
+    setSuggestions([]);
+    setText(prediction.text.toString());
+    try {
+      const place = prediction.toPlace();
+      await place.fetchFields({ fields: ['formattedAddress', 'location'] });
+      sessionToken.current = null;
+      setText(place.formattedAddress);
+      onSelect(place.formattedAddress, place.location?.lat(), place.location?.lng());
+    } catch (err) {
+      console.error('Failed to load place details:', err);
+    }
+  };
 
   return (
-    <input
-      ref={inputRef}
-      type="text"
-      className={styles.input}
-      placeholder="Search address"
-      defaultValue={value}
-    />
+    <div style={{ position: 'relative' }}>
+      <input
+        type="text"
+        className={styles.input}
+        placeholder="Search address"
+        value={text}
+        onChange={(e) => {
+          setText(e.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        autoComplete="off"
+      />
+      {open && suggestions.length > 0 && (
+        <ul
+          style={{
+            position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 20,
+            margin: '4px 0 0', padding: '4px 0', listStyle: 'none',
+            background: '#fff', border: '1px solid #e5e7eb', borderRadius: 8,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.12)', maxHeight: 280, overflowY: 'auto',
+          }}
+        >
+          {suggestions.map((s) => (
+            <li
+              key={s.placePrediction.placeId}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                choose(s);
+              }}
+              style={{ padding: '10px 14px', cursor: 'pointer', fontSize: 14 }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = '#f3f4f6')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+            >
+              {s.placePrediction.text.toString()}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
 
